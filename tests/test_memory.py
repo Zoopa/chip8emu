@@ -2,7 +2,7 @@ import unittest
 import memory
 
 
-class CpuTest(unittest.TestCase):
+class MemoryTest(unittest.TestCase):
 
     def setUp(self):
         self.memory = memory.Memory(4096)
