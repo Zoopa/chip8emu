@@ -3,9 +3,9 @@ import memory
 
 
 class MemoryTest(unittest.TestCase):
-    MEM_POSITION = 0x10
-    MEM_VALUE = 0xFF
     MEM_SIZE = 4096
+    MEM_VALUE = 0xFF
+    MEM_ADDRESS = 0x10
     MEM_ADDRESS_WRONG_LOW = -1
     MEM_ADDRESS_WRONG_HIGH = 4906
 
@@ -16,13 +16,13 @@ class MemoryTest(unittest.TestCase):
         pass
 
     def testGetByteReturnsCorrectValue(self):
-        self.memory.setByte(self.MEM_POSITION, self.MEM_VALUE)
-        byte = self.memory.getByte(self.MEM_POSITION)
+        self.memory.setByte(self.MEM_ADDRESS, self.MEM_VALUE)
+        byte = self.memory.getByte(self.MEM_ADDRESS)
         self.assertEqual(byte, self.MEM_VALUE)
 
     def testSetByteSetsCorrectValue(self):
-        self.memory.setByte(self.MEM_POSITION, self.MEM_VALUE)
-        byte = self.memory.getByte(self.MEM_POSITION)
+        self.memory.setByte(self.MEM_ADDRESS, self.MEM_VALUE)
+        byte = self.memory.getByte(self.MEM_ADDRESS)
         self.assertEqual(byte, self.MEM_VALUE)
 
     def testSetBytesRaisesErrorOnWrongPosition(self):
