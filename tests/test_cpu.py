@@ -7,6 +7,8 @@ class CpuTest(unittest.TestCase):
     MEM_SIZE = 4096
     MEM_ADDRESS = 0x10
     OPCODE = 0xA2F0
+    DECODED_OPCODE = 0xA000
+    INDEX_REGISTER_A000 = 0x02F0
 
     def setUp(self):
         self.memory = Memory(self.MEM_SIZE)
@@ -17,18 +19,38 @@ class CpuTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testCpuHasMemory(self):
+    def testShouldHaveMemory(self):
         self.assertIsInstance(self.cpu.memory, Memory)
 
-    def testFetchOpcodeReadsCorrectOpcode(self):
+    def testShouldFullyInitialiseOpcodeTable(self):
+        pass
+
+    def testShouldInitialiseAllRegisters(self):
+        pass
+
+    def testShouldFetchCorrectOpcode(self):
         opcode = self.cpu.fetchOpcode(self.MEM_ADDRESS)
         self.assertEqual(opcode, self.OPCODE)
 
-    def testDecodeOpcodeDecodesCorrectly(self):
+    def testShouldDecodeOpcodeCorrectly(self):
+        self.cpu.opcode = self.OPCODE
+        decodedOpcode = self.cpu.decodeOpcode()
+        self.assertEqual(decodedOpcode, self.DECODED_OPCODE)
+
+    def testShouldDelegateOpcodeExecutionCorrectly(self):
+        """ How? """
         pass
 
-    def testExecuteOpcodeExecutesCorrectly(self):
-        pass
+    def testShouldRaiseErrorOnWrongOpcode(self):
+        with self.assertRaises(KeyError):
+            self.cpu.executeOpcode(self.OPCODE)
+
+    def testShouldExecuteOpcodeA000Correctly(self):
+        self.cpu.opcode = self.OPCODE
+        pc = self.cpu.programCounter
+        self.cpu.executeOpcodeA000()
+        self.assertEqual(self.cpu.indexRegister, self.INDEX_REGISTER_A000)
+        self.assertEqual(self.cpu.programCounter, pc + 2)
 
 
 if __name__ == "__main__":
