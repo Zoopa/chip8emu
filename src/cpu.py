@@ -100,4 +100,5 @@ class CPU(object):
 
     def executeOpcode00E0(self):
         """ Clear screen """
-        pass
+        self.screen.clear()
+        self.increaseProgramCounter()

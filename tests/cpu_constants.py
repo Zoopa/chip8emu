@@ -6,7 +6,7 @@ class CpuConstants(object):
 
     # MEM #
     MEM_SIZE = 4096
-    MEM_ADDRESS = 0x10
+    MEM_ADDRESS = 0x0F24
 
     # SCREEN #
     SCREEN_W = 64

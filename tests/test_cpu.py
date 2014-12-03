@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import call, Mock
 from cpu import CPU
 from memory import Memory
 from screen import Screen
@@ -10,16 +11,6 @@ class CpuTest(unittest.TestCase):
     def setUp(self):
         self.memory = Memory(CpuConstants.MEM_SIZE)
         self.screen = Screen(CpuConstants.SCREEN_W, CpuConstants.SCREEN_H)
-        self.memory.setByte(
-            CpuConstants.MEM_ADDRESS,
-            (CpuConstants.OPCODE >> 8) & 0xFF
-        )
-
-        self.memory.setByte(
-            CpuConstants.MEM_ADDRESS + 1,
-            CpuConstants.OPCODE & 0xFF
-        )
-
         self.cpu = CPU(self.memory, self.screen)
         self.cpu.programCounter = CpuConstants.PC_BEFORE
 
@@ -36,8 +27,12 @@ class CpuTest(unittest.TestCase):
         pass
 
     def testShouldFetchCorrectOpcode(self):
-        opcode = self.cpu.fetchOpcode(CpuConstants.MEM_ADDRESS)
-        self.assertEqual(opcode, CpuConstants.OPCODE)
+        self.memory.getByte = Mock(return_value=CpuConstants.OPCODE)
+        self.cpu.fetchOpcode(CpuConstants.MEM_ADDRESS)
+        self.memory.getByte.assert_has_calls([
+            call(CpuConstants.MEM_ADDRESS),
+            call(CpuConstants.MEM_ADDRESS + 1)
+        ])
 
     def testShouldDecodeOpcodeCorrectly(self):
         self.cpu.opcode = CpuConstants.OPCODE
@@ -78,11 +73,7 @@ class CpuTest(unittest.TestCase):
 
     def testShouldExecuteOpcode00E0Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_00E0
+        self.screen.clear = Mock()
         self.cpu.executeOpcode00E0()
-        self.assertTrue(
-            self.cpu.screen.screen ==
-            [0] * len(self.cpu.screen.screen)
-        )
-
-if __name__ == "__main__":
-    unittest.main()
+        self.screen.clear.assert_called_once_with()
+        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
