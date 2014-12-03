@@ -30,7 +30,7 @@ class CPU(object):
             0x8007: None,
             0x800E: None,
             0x9000: None,
-            0xA000: self.executeOpcodeA000,
+            0xA000: self.executeOpcodeANNN,
             0xB000: None,
             0xC000: None,
             0xD000: None,
@@ -52,6 +52,8 @@ class CPU(object):
         self.programCounter = 0x00
         self.indexRegister = 0x00
         self.vRegister = [0x00] * 8
+        self.delayTimer = 0x00
+        self.soundTimer = 0x00
 
     def nextCycle(self):
         pass
@@ -75,6 +77,23 @@ class CPU(object):
     def executeOpcode(self, decodedOpcode):
         self.opcodeTable[decodedOpcode]()
 
-    def executeOpcodeA000(self):
-        self.indexRegister = self.opcode & ~self.OPCODE_MASK_4_BIT
+    def increaseProgramCounter(self):
         self.programCounter += 2
+
+    def executeOpcodeANNN(self):
+        """ Set index register to NNN """
+        self.indexRegister = self.opcode & ~self.OPCODE_MASK_4_BIT
+        self.increaseProgramCounter()
+
+    def executeOpcodeFX15(self):
+        """ Set delay timer to value of register VX """
+        x = (self.opcode & ~self.OPCODE_MASK_12_BIT) >> 8
+        self.delayTimer = self.vRegister[x]
+        self.increaseProgramCounter()
+
+    def executeOpcodeFX18(self):
+        """ Set sound timer to value of register VX """
+        x = (self.opcode & ~self.OPCODE_MASK_12_BIT) >> 8
+        self.soundTimer = self.vRegister[x]
+        self.increaseProgramCounter()
+        pass
