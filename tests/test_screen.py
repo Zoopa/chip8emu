@@ -13,8 +13,8 @@ class ScreenTest(unittest.TestCase):
         pass
 
     def testShouldHaveCorrectSize(self):
-        self.assertEqual(self.screen.getWidth(), self.SCREEN_W)
-        self.assertEqual(self.screen.getHeight(), self.SCREEN_H)
+        self.assertEqual(self.screen.width, self.SCREEN_W)
+        self.assertEqual(self.screen.height, self.SCREEN_H)
 
     def testShouldChangeCorrectPixel(self):
         self.screen.setPixel(1, 1, True)

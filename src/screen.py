@@ -7,12 +7,6 @@ class Screen(object):
     def clear(self):
         self.screen = [0] * self.width * self.height
 
-    def getWidth(self):
-        return self.width
-
-    def getHeight(self):
-        return self.height
-
     def setPixel(self, x, y, isOn):
         self.screen[x + y * self.width] = isOn
 
