@@ -1,5 +1,5 @@
 import unittest
-import memory
+from memory import Memory
 
 
 class MemoryTest(unittest.TestCase):
@@ -10,7 +10,7 @@ class MemoryTest(unittest.TestCase):
     MEM_ADDRESS_WRONG_HIGH = 4906
 
     def setUp(self):
-        self.memory = memory.Memory(self.MEM_SIZE)
+        self.memory = Memory(self.MEM_SIZE)
 
     def tearDown(self):
         pass

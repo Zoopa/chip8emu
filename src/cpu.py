@@ -3,15 +3,16 @@ class CPU(object):
     OPCODE_MASK_8_BIT = 0xF00F
     OPCODE_MASK_12_BIT = 0xF0FF
 
-    def __init__(self, memory):
+    def __init__(self, memory, screen):
         self.memory = memory
+        self.screen = screen
         self.initialiseRegisters()
         self.initialiseInstructionTable()
 
     def initialiseInstructionTable(self):
         self.opcodeTable = {
             0x0000: None,
-            0x00E0: None,
+            0x00E0: self.executeOpcode00E0,
             0x00EE: None,
             0x1000: None,
             0x2000: None,
@@ -38,8 +39,8 @@ class CPU(object):
             0xE0A1: None,
             0xF007: None,
             0xF00A: None,
-            0xF015: None,
-            0xF018: None,
+            0xF015: self.executeOpcodeFX15,
+            0xF018: self.executeOpcodeFX18,
             0xF01E: None,
             0xF029: None,
             0xF033: None,
@@ -96,4 +97,7 @@ class CPU(object):
         x = (self.opcode & ~self.OPCODE_MASK_12_BIT) >> 8
         self.soundTimer = self.vRegister[x]
         self.increaseProgramCounter()
+
+    def executeOpcode00E0(self):
+        """ Clear screen """
         pass
