@@ -2,8 +2,8 @@ class CpuConstants(object):
     OPCODE = 0xA2F0
     DECODED_OPCODE = 0xA000
     INVALID_OPCODE = 0xFFFF
-    PC_BEFORE = 0x16
-    PC_AFTER = 0x18
+    PC_BEFORE = 0x200
+    PC_AFTER = 0x202
 
     # MEM #
     MEM_SIZE = 4096
@@ -16,6 +16,12 @@ class CpuConstants(object):
     # ANNN #
     OPCODE_ANNN = 0xABCD
     IR_ANNN = 0x0BCD
+
+    # 2NNN #
+    OPCODE_2NNN = 0x2ABC
+    PC_2NNN = 0xABC
+    SP_2NNN = 0x01
+    PC_ON_STACK_2NNN = 0x200
 
     # FX15 #
     OPCODE_FX15 = 0xF415

@@ -19,7 +19,7 @@ class CPU(object):
             0x00E0: self.executeOpcode00E0,
             0x00EE: None,
             0x1000: None,
-            0x2000: None,
+            0x2000: self.executeOpcode2NNN,
             0x3000: None,
             0x4000: None,
             0x5000: None,
@@ -53,12 +53,12 @@ class CPU(object):
         }
 
     def initialiseStack(self):
-        self.stack = []
+        self.stack = [0x00] * 16
         self.stackPointer = 0x00
 
     def initialiseRegisters(self):
         self.opcode = 0x00
-        self.programCounter = 0x00
+        self.programCounter = 0x200
         self.indexRegister = 0x00
         self.vRegister = [0x00] * 8
         self.delayTimer = 0x00
@@ -92,10 +92,21 @@ class CPU(object):
     def increaseProgramCounter(self):
         self.programCounter += 2
 
+    def executeOpcode00E0(self):
+        """ Clear screen """
+        self.screen.clear()
+        self.increaseProgramCounter()
+
     def executeOpcodeANNN(self):
         """ Set index register to NNN """
         self.indexRegister = self.opcode & ~self.OPCODE_MASK_4_BIT
         self.increaseProgramCounter()
+
+    def executeOpcode2NNN(self):
+        """ Call function at address NNN """
+        self.stack[self.stackPointer] = self.programCounter
+        self.stackPointer += 1
+        self.programCounter = self.opcode & ~self.OPCODE_MASK_4_BIT
 
     def executeOpcodeFX15(self):
         """ Set delay timer to value of register VX """
@@ -107,9 +118,4 @@ class CPU(object):
         """ Set sound timer to value of register VX """
         x = (self.opcode & ~self.OPCODE_MASK_12_BIT) >> 8
         self.soundTimer = self.vRegister[x]
-        self.increaseProgramCounter()
-
-    def executeOpcode00E0(self):
-        """ Clear screen """
-        self.screen.clear()
         self.increaseProgramCounter()
