@@ -88,6 +88,11 @@ class CpuTest(unittest.TestCase):
         self.assertEqual(self.cpu.indexRegister, CpuConstants.IR_ANNN)
         self.assertProgramCounterIncreased()
 
+    def testShouldExecuteOpcode1NNNCorrectly(self):
+        self.cpu.opcode = CpuConstants.OPCODE_1NNN
+        self.cpu.executeOpcode1NNN()
+        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_1NNN)
+
     def testShouldExecuteOpcode2NNNCorrectly(self):
         oldSp = self.cpu.stackPointer
         self.cpu.opcode = CpuConstants.OPCODE_2NNN

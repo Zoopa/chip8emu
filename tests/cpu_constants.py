@@ -17,6 +17,10 @@ class CpuConstants(object):
     OPCODE_ANNN = 0xABCD
     IR_ANNN = 0x0BCD
 
+    # 1NNN #
+    OPCODE_1NNN = 0x1ABC
+    PC_1NNN = 0xABC
+
     # 2NNN #
     OPCODE_2NNN = 0x2ABC
     PC_2NNN = 0xABC

@@ -102,6 +102,10 @@ class CPU(object):
         self.indexRegister = self.opcode & ~self.OPCODE_MASK_4_BIT
         self.increaseProgramCounter()
 
+    def executeOpcode1NNN(self):
+        """ Jump to address NNN """
+        self.programCounter = self.opcode & ~self.OPCODE_MASK_4_BIT
+
     def executeOpcode2NNN(self):
         """ Call function at address NNN """
         self.stack[self.stackPointer] = self.programCounter
