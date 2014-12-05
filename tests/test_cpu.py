@@ -21,6 +21,12 @@ class CpuTest(unittest.TestCase):
     def assertProgramCounterIncreased(self):
         self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
 
+    def assertProgramCounterNotIncreased(self):
+        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_BEFORE)
+
+    def assertRegisterIsZero(self, register):
+        self.assertTrue(register == 0x00)
+
     def testShouldHaveMemory(self):
         self.assertIsInstance(self.cpu.memory, Memory)
 
@@ -28,7 +34,19 @@ class CpuTest(unittest.TestCase):
         pass
 
     def testShouldInitialiseAllRegisters(self):
-        pass
+        self.assertEqual(self.cpu.vRegister, [0x0] * 8)
+        self.assertRegisterIsZero(self.cpu.opcode)
+        self.assertRegisterIsZero(self.cpu.indexRegister)
+        self.assertRegisterIsZero(self.cpu.delayTimer)
+        self.assertRegisterIsZero(self.cpu.soundTimer)
+        self.assertRegisterIsZero(self.cpu.soundTimer)
+
+        #setUp sets program counter...
+        #self.assertRegisterIsZero(self.cpu.programCounter)
+
+    def testShouldInitialiseStackAndPointer(self):
+        self.assertEqual(self.cpu.stack, [])
+        self.assertEqual(self.cpu.stackPointer, 0x00)
 
     def testShouldFetchCorrectOpcode(self):
         self.memory.getByte = Mock(return_value=CpuConstants.OPCODE)

@@ -11,6 +11,7 @@ class CPU(object):
         self.screen = screen
         self.initialiseRegisters()
         self.initialiseInstructionTable()
+        self.initialiseStack()
 
     def initialiseInstructionTable(self):
         self.opcodeTable = {
@@ -50,6 +51,10 @@ class CPU(object):
             0xF055: None,
             0xF065: None,
         }
+
+    def initialiseStack(self):
+        self.stack = []
+        self.stackPointer = 0x00
 
     def initialiseRegisters(self):
         self.opcode = 0x00
