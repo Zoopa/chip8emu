@@ -4,6 +4,7 @@ from cpu import CPU
 from memory import Memory
 from screen import Screen
 from cpu_constants import CpuConstants
+from unknown_opcode_exception import UnknownOpcodeException
 
 
 class CpuTest(unittest.TestCase):
@@ -16,6 +17,9 @@ class CpuTest(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def assertProgramCounterIncreased(self):
+        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
 
     def testShouldHaveMemory(self):
         self.assertIsInstance(self.cpu.memory, Memory)
@@ -39,13 +43,18 @@ class CpuTest(unittest.TestCase):
         decodedOpcode = self.cpu.decodeOpcode()
         self.assertEqual(decodedOpcode, CpuConstants.DECODED_OPCODE)
 
+    def testShouldRaiseExceptionOnUnknownOpcode(self):
+        with self.assertRaises(UnknownOpcodeException):
+            self.cpu.opcode = CpuConstants.INVALID_OPCODE
+            self.cpu.decodeOpcode()
+
     def testShouldDelegateOpcodeExecutionCorrectly(self):
         """ How? """
         pass
 
     def testShouldIncreaseProgramCounterByTwo(self):
         self.cpu.increaseProgramCounter()
-        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
+        self.assertProgramCounterIncreased()
 
     def testShouldRaiseErrorOnWrongOpcode(self):
         with self.assertRaises(KeyError):
@@ -55,25 +64,25 @@ class CpuTest(unittest.TestCase):
         self.cpu.opcode = CpuConstants.OPCODE_ANNN
         self.cpu.executeOpcodeANNN()
         self.assertEqual(self.cpu.indexRegister, CpuConstants.IR_ANNN)
-        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
+        self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcodeFX15Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX15
         self.cpu.vRegister[CpuConstants.V_REG_FX15] = CpuConstants.V4_FX15
         self.cpu.executeOpcodeFX15()
         self.assertEqual(self.cpu.delayTimer, CpuConstants.DT_FX15)
-        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
+        self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcodeFX18Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX18
         self.cpu.vRegister[CpuConstants.V_REG_FX18] = CpuConstants.V6_FX18
         self.cpu.executeOpcodeFX18()
         self.assertEqual(self.cpu.soundTimer, CpuConstants.ST_FX18)
-        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
+        self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcode00E0Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_00E0
         self.screen.clear = Mock()
         self.cpu.executeOpcode00E0()
         self.screen.clear.assert_called_once_with()
-        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
+        self.assertProgramCounterIncreased()

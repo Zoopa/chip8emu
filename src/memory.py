@@ -1,7 +1,7 @@
 class Memory(object):
 
     def __init__(self, size):
-        self.memory = [None] * size
+        self.memory = [0x00] * size
 
     def setByte(self, position, newByte):
         if position < 0:

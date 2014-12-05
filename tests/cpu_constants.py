@@ -1,6 +1,7 @@
 class CpuConstants(object):
     OPCODE = 0xA2F0
     DECODED_OPCODE = 0xA000
+    INVALID_OPCODE = 0xFFFF
     PC_BEFORE = 0x16
     PC_AFTER = 0x18
 

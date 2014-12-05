@@ -1,3 +1,6 @@
+from unknown_opcode_exception import UnknownOpcodeException
+
+
 class CPU(object):
     OPCODE_MASK_4_BIT = 0xF000
     OPCODE_MASK_8_BIT = 0xF00F
@@ -65,6 +68,7 @@ class CPU(object):
         return firstHalf | secondHalf
 
     def decodeOpcode(self):
+        # TODO: does this match 0x00E0 vs 0x000?
         for mask in [
             self.OPCODE_MASK_4_BIT,
             self.OPCODE_MASK_8_BIT,
@@ -74,6 +78,8 @@ class CPU(object):
 
             if decodedOpcode in self.opcodeTable:
                 return decodedOpcode
+
+        raise UnknownOpcodeException()
 
     def executeOpcode(self, decodedOpcode):
         self.opcodeTable[decodedOpcode]()
