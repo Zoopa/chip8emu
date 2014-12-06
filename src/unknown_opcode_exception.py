@@ -1,0 +1,2 @@
+class UnknownOpcodeException(Exception):
+    pass

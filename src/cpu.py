@@ -92,6 +92,9 @@ class CPU(object):
     def increaseProgramCounter(self):
         self.programCounter += 2
 
+    def skipInstruction(self):
+        self.programCounter += 4
+
     def executeOpcode00E0(self):
         """ Clear screen """
         self.screen.clear()
@@ -111,6 +114,37 @@ class CPU(object):
         self.stack[self.stackPointer] = self.programCounter
         self.stackPointer += 1
         self.programCounter = self.opcode & ~self.OPCODE_MASK_4_BIT
+
+    def executeOpcode3XNN(self):
+        """ Skip next instruction if VX == NN """
+        x = (self.opcode & ~self.OPCODE_MASK_12_BIT) >> 8
+        nn = self.opcode & 0xFF
+
+        if self.vRegister[x] == nn:
+            self.skipInstruction()
+        else:
+            self.increaseProgramCounter()
+
+    def executeOpcode4XNN(self):
+        """ Skip next instruction if VX != NN """
+        x = (self.opcode & ~self.OPCODE_MASK_12_BIT) >> 8
+        nn = self.opcode & 0xFF
+
+        if self.vRegister[x] != nn:
+            self.skipInstruction()
+        else:
+            self.increaseProgramCounter()
+
+    def executeOpcode5XY0(self):
+        """ Skip next instruction if VX == VY """
+        x = (self.opcode & 0xF00) >> 8
+        y = (self.opcode & 0xF0) >> 4
+
+        if self.vRegister[x] == self.vRegister[y]:
+            self.skipInstruction()
+        else:
+            self.increaseProgramCounter()
+        pass
 
     def executeOpcodeFX15(self):
         """ Set delay timer to value of register VX """

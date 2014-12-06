@@ -21,6 +21,9 @@ class CpuTest(unittest.TestCase):
     def assertProgramCounterIncreased(self):
         self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER)
 
+    def assertInstructionSkipped(self):
+        self.assertEqual(self.cpu.programCounter, CpuConstants.PC_AFTER_SKIP)
+
     def assertRegisterIsZero(self, register):
         self.assertTrue(register == 0x00)
 
@@ -71,6 +74,10 @@ class CpuTest(unittest.TestCase):
         self.cpu.increaseProgramCounter()
         self.assertProgramCounterIncreased()
 
+    def testShouldIncreaseProgramCounterByFourOnSkip(self):
+        self.cpu.skipInstruction()
+        self.assertInstructionSkipped()
+
     def testShouldRaiseErrorOnWrongOpcode(self):
         with self.assertRaises(KeyError):
             self.cpu.executeOpcode(CpuConstants.OPCODE)
@@ -100,6 +107,44 @@ class CpuTest(unittest.TestCase):
         self.assertEqual(self.cpu.stackPointer, CpuConstants.SP_2NNN)
         self.assertEqual(self.cpu.programCounter, CpuConstants.PC_2NNN)
         self.assertEqual(self.cpu.stack[oldSp], CpuConstants.PC_ON_STACK_2NNN)
+
+    def testShouldSkipInstructionForOpcode3XNN(self):
+        self.cpu.opcode = CpuConstants.OPCODE_3XNN
+        self.cpu.vRegister[CpuConstants.V_REG_3XNN] = CpuConstants.V4_3XNN_EQ
+        self.cpu.executeOpcode3XNN()
+        self.assertInstructionSkipped()
+
+    def testShouldNotSkipInstructionForOpcode3XNN(self):
+        self.cpu.opcode = CpuConstants.OPCODE_3XNN
+        self.cpu.vRegister[CpuConstants.V_REG_3XNN] = CpuConstants.V4_3XNN_NEQ
+        self.cpu.executeOpcode3XNN()
+        self.assertProgramCounterIncreased()
+
+    def testShouldSkipInstructionForOpcode4XNN(self):
+        self.cpu.opcode = CpuConstants.OPCODE_4XNN
+        self.cpu.vRegister[CpuConstants.V_REG_4XNN] = CpuConstants.V5_4XNN_NEQ
+        self.cpu.executeOpcode4XNN()
+        self.assertInstructionSkipped()
+
+    def testShouldNotSkipInstructionForOpcode4XNN(self):
+        self.cpu.opcode = CpuConstants.OPCODE_4XNN
+        self.cpu.vRegister[CpuConstants.V_REG_4XNN] = CpuConstants.V5_4XNN_EQ
+        self.cpu.executeOpcode4XNN()
+        self.assertProgramCounterIncreased()
+
+    def testShouldSkipInstructionForOpcode5XY0(self):
+        self.cpu.opcode = CpuConstants.OPCODE_5XY0
+        self.cpu.vRegister[CpuConstants.V_REG1_5XY0] = CpuConstants.V6_5XY0_EQ
+        self.cpu.vRegister[CpuConstants.V_REG2_5XY0] = CpuConstants.V7_5XY0_EQ
+        self.cpu.executeOpcode5XY0()
+        self.assertInstructionSkipped()
+
+    def testShouldNotSkipInstructionForOpcode5XY0(self):
+        self.cpu.opcode = CpuConstants.OPCODE_5XY0
+        self.cpu.vRegister[CpuConstants.V_REG1_5XY0] = CpuConstants.V6_5XY0_EQ
+        self.cpu.vRegister[CpuConstants.V_REG2_5XY0] = CpuConstants.V7_5XY0_NEQ
+        self.cpu.executeOpcode5XY0()
+        self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcodeFX15Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX15

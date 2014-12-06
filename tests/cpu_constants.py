@@ -4,6 +4,7 @@ class CpuConstants(object):
     INVALID_OPCODE = 0xFFFF
     PC_BEFORE = 0x200
     PC_AFTER = 0x202
+    PC_AFTER_SKIP = 0x204
 
     # MEM #
     MEM_SIZE = 4096
@@ -26,6 +27,26 @@ class CpuConstants(object):
     PC_2NNN = 0xABC
     SP_2NNN = 0x01
     PC_ON_STACK_2NNN = 0x200
+
+    # 3XNN #
+    OPCODE_3XNN = 0x3456
+    V_REG_3XNN = 4
+    V4_3XNN_EQ = 0x56
+    V4_3XNN_NEQ = 0x57
+
+    # 4XNN #
+    OPCODE_4XNN = 0x4567
+    V_REG_4XNN = 5
+    V5_4XNN_EQ = 0x67
+    V5_4XNN_NEQ = 0x68
+
+    # 5XY0 #
+    OPCODE_5XY0 = 0x5670
+    V_REG1_5XY0 = 6
+    V_REG2_5XY0 = 7
+    V6_5XY0_EQ = 0x12
+    V7_5XY0_EQ = 0x12
+    V7_5XY0_NEQ = 0x13
 
     # FX15 #
     OPCODE_FX15 = 0xF415
