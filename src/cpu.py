@@ -18,11 +18,11 @@ class CPU(object):
             0x0000: None,
             0x00E0: self.executeOpcode00E0,
             0x00EE: None,
-            0x1000: None,
+            0x1000: self.executeOpcode1NNN,
             0x2000: self.executeOpcode2NNN,
-            0x3000: None,
-            0x4000: None,
-            0x5000: None,
+            0x3000: self.executeOpcode3XNN,
+            0x4000: self.executeOpcode4XNN,
+            0x5000: self.executeOpcode5XY0,
             0x6000: None,
             0x7000: None,
             0x8000: None,
@@ -100,11 +100,6 @@ class CPU(object):
         self.screen.clear()
         self.increaseProgramCounter()
 
-    def executeOpcodeANNN(self):
-        """ Set index register to NNN """
-        self.indexRegister = self.opcode & ~self.OPCODE_MASK_4_BIT
-        self.increaseProgramCounter()
-
     def executeOpcode1NNN(self):
         """ Jump to address NNN """
         self.programCounter = self.opcode & ~self.OPCODE_MASK_4_BIT
@@ -144,7 +139,11 @@ class CPU(object):
             self.skipInstruction()
         else:
             self.increaseProgramCounter()
-        pass
+
+    def executeOpcodeANNN(self):
+        """ Set index register to NNN """
+        self.indexRegister = self.opcode & ~self.OPCODE_MASK_4_BIT
+        self.increaseProgramCounter()
 
     def executeOpcodeFX15(self):
         """ Set delay timer to value of register VX """
