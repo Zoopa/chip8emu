@@ -48,6 +48,11 @@ class CpuConstants(object):
     V7_5XY0_EQ = 0x12
     V7_5XY0_NEQ = 0x13
 
+    # 6XNN #
+    OPCODE_6XNN = 0x6123
+    V_REG_6XNN = 0x01
+    V1_6XNN = 0x23
+
     # FX15 #
     OPCODE_FX15 = 0xF415
     DT_FX15 = 0x1234

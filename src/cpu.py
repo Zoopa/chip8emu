@@ -23,7 +23,7 @@ class CPU(object):
             0x3000: self.executeOpcode3XNN,
             0x4000: self.executeOpcode4XNN,
             0x5000: self.executeOpcode5XY0,
-            0x6000: None,
+            0x6000: self.executeOpcode6XNN,
             0x7000: None,
             0x8000: None,
             0x8001: None,
@@ -139,6 +139,13 @@ class CPU(object):
             self.skipInstruction()
         else:
             self.increaseProgramCounter()
+
+    def executeOpcode6XNN(self):
+        """ Set VX to NN """
+        x = (self.opcode & ~self.OPCODE_MASK_12_BIT) >> 8
+        nn = self.opcode & 0xFF
+        self.vRegister[x] = nn
+        self.increaseProgramCounter()
 
     def executeOpcodeANNN(self):
         """ Set index register to NNN """

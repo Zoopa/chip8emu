@@ -146,6 +146,15 @@ class CpuTest(unittest.TestCase):
         self.cpu.executeOpcode5XY0()
         self.assertProgramCounterIncreased()
 
+    def testShouldExecuteOpcode6XNNCorrectly(self):
+        self.cpu.opcode = CpuConstants.OPCODE_6XNN
+        self.cpu.executeOpcode6XNN()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.V_REG_6XNN],
+            CpuConstants.V1_6XNN
+        )
+        self.assertProgramCounterIncreased()
+
     def testShouldExecuteOpcodeFX15Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX15
         self.cpu.vRegister[CpuConstants.V_REG_FX15] = CpuConstants.V4_FX15
