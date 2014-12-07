@@ -110,39 +110,39 @@ class CpuTest(unittest.TestCase):
 
     def testShouldSkipInstructionForOpcode3XNN(self):
         self.cpu.opcode = CpuConstants.OPCODE_3XNN
-        self.cpu.vRegister[CpuConstants.V_REG_3XNN] = CpuConstants.V4_3XNN_EQ
+        self.cpu.vRegister[CpuConstants.X_3XNN] = CpuConstants.VX_3XNN_EQ
         self.cpu.executeOpcode3XNN()
         self.assertInstructionSkipped()
 
     def testShouldNotSkipInstructionForOpcode3XNN(self):
         self.cpu.opcode = CpuConstants.OPCODE_3XNN
-        self.cpu.vRegister[CpuConstants.V_REG_3XNN] = CpuConstants.V4_3XNN_NEQ
+        self.cpu.vRegister[CpuConstants.X_3XNN] = CpuConstants.VX_3XNN_NEQ
         self.cpu.executeOpcode3XNN()
         self.assertProgramCounterIncreased()
 
     def testShouldSkipInstructionForOpcode4XNN(self):
         self.cpu.opcode = CpuConstants.OPCODE_4XNN
-        self.cpu.vRegister[CpuConstants.V_REG_4XNN] = CpuConstants.V5_4XNN_NEQ
+        self.cpu.vRegister[CpuConstants.X_4XNN] = CpuConstants.VX_4XNN_NEQ
         self.cpu.executeOpcode4XNN()
         self.assertInstructionSkipped()
 
     def testShouldNotSkipInstructionForOpcode4XNN(self):
         self.cpu.opcode = CpuConstants.OPCODE_4XNN
-        self.cpu.vRegister[CpuConstants.V_REG_4XNN] = CpuConstants.V5_4XNN_EQ
+        self.cpu.vRegister[CpuConstants.X_4XNN] = CpuConstants.VX_4XNN_EQ
         self.cpu.executeOpcode4XNN()
         self.assertProgramCounterIncreased()
 
     def testShouldSkipInstructionForOpcode5XY0(self):
         self.cpu.opcode = CpuConstants.OPCODE_5XY0
-        self.cpu.vRegister[CpuConstants.V_REG1_5XY0] = CpuConstants.V6_5XY0_EQ
-        self.cpu.vRegister[CpuConstants.V_REG2_5XY0] = CpuConstants.V7_5XY0_EQ
+        self.cpu.vRegister[CpuConstants.X_5XY0] = CpuConstants.VX_5XY0_EQ
+        self.cpu.vRegister[CpuConstants.Y_5XY0] = CpuConstants.VY_5XY0_EQ
         self.cpu.executeOpcode5XY0()
         self.assertInstructionSkipped()
 
     def testShouldNotSkipInstructionForOpcode5XY0(self):
         self.cpu.opcode = CpuConstants.OPCODE_5XY0
-        self.cpu.vRegister[CpuConstants.V_REG1_5XY0] = CpuConstants.V6_5XY0_EQ
-        self.cpu.vRegister[CpuConstants.V_REG2_5XY0] = CpuConstants.V7_5XY0_NEQ
+        self.cpu.vRegister[CpuConstants.X_5XY0] = CpuConstants.VX_5XY0_EQ
+        self.cpu.vRegister[CpuConstants.Y_5XY0] = CpuConstants.VY_5XY0_NEQ
         self.cpu.executeOpcode5XY0()
         self.assertProgramCounterIncreased()
 
@@ -150,21 +150,51 @@ class CpuTest(unittest.TestCase):
         self.cpu.opcode = CpuConstants.OPCODE_6XNN
         self.cpu.executeOpcode6XNN()
         self.assertEqual(
-            self.cpu.vRegister[CpuConstants.V_REG_6XNN],
-            CpuConstants.V1_6XNN
+            self.cpu.vRegister[CpuConstants.X_6XNN],
+            CpuConstants.VX_6XNN
         )
         self.assertProgramCounterIncreased()
 
+    def testShouldExecuteOpcode7XNNWithoutOverflow(self):
+        self.cpu.opcode = CpuConstants.OPCODE_7XNN
+        self.cpu.vRegister[CpuConstants.X_7XNN] = CpuConstants.VX_7XNN_LO
+        self.cpu.executeOpcode7XNN()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_7XNN],
+            CpuConstants.VX_7XNN_SUM
+        )
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode7XNNWithOverflow(self):
+        self.cpu.opcode = CpuConstants.OPCODE_7XNN_OVERFLOW
+        self.cpu.vRegister[CpuConstants.X_7XNN] = CpuConstants.VX_7XNN_HI
+        self.cpu.executeOpcode7XNN()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_7XNN],
+            CpuConstants.VX_7XNN_SUM
+        )
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode8XY0Correctly(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY0
+        self.cpu.vRegister[CpuConstants.X_8XY0] = CpuConstants.VX_8XY0_OLD
+        self.cpu.vRegister[CpuConstants.Y_8XY0] = CpuConstants.VY_8XY0
+        self.cpu.executeOpcode8XY0()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY0],
+            CpuConstants.VX_8XY0_NEW
+        )
+
     def testShouldExecuteOpcodeFX15Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX15
-        self.cpu.vRegister[CpuConstants.V_REG_FX15] = CpuConstants.V4_FX15
+        self.cpu.vRegister[CpuConstants.X_FX15] = CpuConstants.V4_FX15
         self.cpu.executeOpcodeFX15()
         self.assertEqual(self.cpu.delayTimer, CpuConstants.DT_FX15)
         self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcodeFX18Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX18
-        self.cpu.vRegister[CpuConstants.V_REG_FX18] = CpuConstants.V6_FX18
+        self.cpu.vRegister[CpuConstants.X_FX18] = CpuConstants.V6_FX18
         self.cpu.executeOpcodeFX18()
         self.assertEqual(self.cpu.soundTimer, CpuConstants.ST_FX18)
         self.assertProgramCounterIncreased()
