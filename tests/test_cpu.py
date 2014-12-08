@@ -186,16 +186,49 @@ class CpuTest(unittest.TestCase):
         )
         self.assertProgramCounterIncreased()
 
+    def testShouldExecuteOpcode8XY1Correctly(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY1
+        self.cpu.vRegister[CpuConstants.X_8XY1] = CpuConstants.VX_8XY1_OLD
+        self.cpu.vRegister[CpuConstants.Y_8XY1] = CpuConstants.VY_8XY1
+        self.cpu.executeOpcode8XY1()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY1],
+            CpuConstants.VX_8XY1_NEW
+        )
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode8XY2Correctly(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY2
+        self.cpu.vRegister[CpuConstants.X_8XY2] = CpuConstants.VX_8XY2_OLD
+        self.cpu.vRegister[CpuConstants.Y_8XY2] = CpuConstants.VY_8XY2
+        self.cpu.executeOpcode8XY2()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY2],
+            CpuConstants.VX_8XY2_NEW
+        )
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode8XY3Correctly(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY3
+        self.cpu.vRegister[CpuConstants.X_8XY3] = CpuConstants.VX_8XY3_OLD
+        self.cpu.vRegister[CpuConstants.Y_8XY3] = CpuConstants.VY_8XY3
+        self.cpu.executeOpcode8XY3()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY3],
+            CpuConstants.VX_8XY3_NEW
+        )
+        self.assertProgramCounterIncreased()
+
     def testShouldExecuteOpcodeFX15Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX15
-        self.cpu.vRegister[CpuConstants.X_FX15] = CpuConstants.V4_FX15
+        self.cpu.vRegister[CpuConstants.X_FX15] = CpuConstants.VX_FX15
         self.cpu.executeOpcodeFX15()
         self.assertEqual(self.cpu.delayTimer, CpuConstants.DT_FX15)
         self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcodeFX18Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX18
-        self.cpu.vRegister[CpuConstants.X_FX18] = CpuConstants.V6_FX18
+        self.cpu.vRegister[CpuConstants.X_FX18] = CpuConstants.VX_FX18
         self.cpu.executeOpcodeFX18()
         self.assertEqual(self.cpu.soundTimer, CpuConstants.ST_FX18)
         self.assertProgramCounterIncreased()

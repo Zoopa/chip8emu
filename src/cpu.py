@@ -26,9 +26,9 @@ class CPU(object):
             0x6000: self.executeOpcode6XNN,
             0x7000: self.executeOpcode7XNN,
             0x8000: self.executeOpcode8XY0,
-            0x8001: None,
-            0x8002: None,
-            0x8003: None,
+            0x8001: self.executeOpcode8XY1,
+            0x8002: self.executeOpcode8XY2,
+            0x8003: self.executeOpcode8XY3,
             0x8004: None,
             0x8005: None,
             0x8006: None,
@@ -160,6 +160,27 @@ class CPU(object):
         x = (self.opcode & 0xF00) >> 8
         y = (self.opcode & 0xF0) >> 4
         self.vRegister[x] = self.vRegister[y]
+        self.increaseProgramCounter()
+
+    def executeOpcode8XY1(self):
+        """ Set VX to VX OR VY """
+        x = (self.opcode & 0xF00) >> 8
+        y = (self.opcode & 0xF0) >> 4
+        self.vRegister[x] |= self.vRegister[y]
+        self.increaseProgramCounter()
+
+    def executeOpcode8XY2(self):
+        """ Set VX to VX AND VY """
+        x = (self.opcode & 0xF00) >> 8
+        y = (self.opcode & 0xF0) >> 4
+        self.vRegister[x] &= self.vRegister[y]
+        self.increaseProgramCounter()
+
+    def executeOpcode8XY3(self):
+        """ Set VX to VX XOR VY """
+        x = (self.opcode & 0xF00) >> 8
+        y = (self.opcode & 0xF0) >> 4
+        self.vRegister[x] ^= self.vRegister[y]
         self.increaseProgramCounter()
 
     def executeOpcodeANNN(self):

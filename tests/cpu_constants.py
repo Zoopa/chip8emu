@@ -69,16 +69,40 @@ class CpuConstants(object):
     VX_8XY0_NEW = 0x23
     VY_8XY0 = 0x23
 
+    # 8XY1 #
+    OPCODE_8XY1 = 0x8121
+    X_8XY1 = 0x01
+    Y_8XY1 = 0x02
+    VX_8XY1_OLD = 0x12
+    VX_8XY1_NEW = 0x33
+    VY_8XY1 = 0x23
+
+    # 8XY2 #
+    OPCODE_8XY2 = 0x8342
+    X_8XY2 = 0x03
+    Y_8XY2 = 0x04
+    VX_8XY2_OLD = 0x12
+    VX_8XY2_NEW = 0x02
+    VY_8XY2 = 0x23
+
+    # 8XY3 #
+    OPCODE_8XY3 = 0x8673
+    X_8XY3 = 0x06
+    Y_8XY3 = 0x07
+    VX_8XY3_OLD = 0x12
+    VX_8XY3_NEW = 0x31
+    VY_8XY3 = 0x23
+
     # FX15 #
     OPCODE_FX15 = 0xF415
     DT_FX15 = 0x1234
-    V4_FX15 = 0x1234
+    VX_FX15 = 0x1234
     X_FX15 = 4
 
     # FX18 #
     OPCODE_FX18 = 0xF615
     ST_FX18 = 0x1234
-    V6_FX18 = 0x1234
+    VX_FX18 = 0x1234
     X_FX18 = 6
 
     # 00E0 #
