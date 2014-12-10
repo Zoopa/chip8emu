@@ -29,7 +29,7 @@ class CPU(object):
             0x8001: self.executeOpcode8XY1,
             0x8002: self.executeOpcode8XY2,
             0x8003: self.executeOpcode8XY3,
-            0x8004: None,
+            0x8004: self.executeOpcode8XY4,
             0x8005: None,
             0x8006: None,
             0x8007: None,
@@ -60,7 +60,7 @@ class CPU(object):
         self.opcode = 0x00
         self.programCounter = 0x200
         self.indexRegister = 0x00
-        self.vRegister = [0x00] * 8
+        self.vRegister = [0x00] * 16
         self.delayTimer = 0x00
         self.soundTimer = 0x00
 
@@ -91,6 +91,9 @@ class CPU(object):
 
     def increaseProgramCounter(self):
         self.programCounter += 2
+
+    def setCarry(self, isSet):
+        self.vRegister[0x0F] = 0x01 if isSet else 0x00
 
     def skipInstruction(self):
         self.programCounter += 4
@@ -181,6 +184,15 @@ class CPU(object):
         x = (self.opcode & 0xF00) >> 8
         y = (self.opcode & 0xF0) >> 4
         self.vRegister[x] ^= self.vRegister[y]
+        self.increaseProgramCounter()
+
+    def executeOpcode8XY4(self):
+        """ Adds VY to VX with carry in VF """
+        x = (self.opcode & 0xF00) >> 8
+        y = (self.opcode & 0xF0) >> 4
+        val = self.vRegister[x] + self.vRegister[y]
+        self.vRegister[x] = val & 0xFF
+        self.setCarry(val > 0xFF)
         self.increaseProgramCounter()
 
     def executeOpcodeANNN(self):

@@ -2,6 +2,7 @@ class CpuConstants(object):
     OPCODE = 0xA2F0
     DECODED_OPCODE = 0xA000
     INVALID_OPCODE = 0xFFFF
+    V_CARRY = 0x0F
     PC_BEFORE = 0x200
     PC_AFTER = 0x202
     PC_AFTER_SKIP = 0x204
@@ -54,44 +55,56 @@ class CpuConstants(object):
     VX_6XNN = 0x23
 
     # 7XNN #
-    OPCODE_7XNN = 0x7123
-    OPCODE_7XNN_OVERFLOW = 0x7147
+    OPCODE_7XNN = 0x7133
+    OPCODE_7XNN_OVERFLOW = 0x71F0
     X_7XNN = 0x01
-    VX_7XNN_LO = 0x23
-    VX_7XNN_HI = 0xFF
-    VX_7XNN_SUM = 0x46
+    VX_7XNN = 0x22
+    VX_7XNN_SUM = 0x55
+    VX_7XNN_SUM_OVERFLOW = 0x12
 
     # 8XY0 #
     OPCODE_8XY0 = 0x8120
     X_8XY0 = 1
     Y_8XY0 = 2
-    VX_8XY0_OLD = 0x11
-    VX_8XY0_NEW = 0x23
+    VX_8XY0_BEFORE = 0x11
+    VX_8XY0_AFTER = 0x23
     VY_8XY0 = 0x23
 
     # 8XY1 #
     OPCODE_8XY1 = 0x8121
     X_8XY1 = 0x01
     Y_8XY1 = 0x02
-    VX_8XY1_OLD = 0x12
-    VX_8XY1_NEW = 0x33
+    VX_8XY1_BEFORE = 0x12
+    VX_8XY1_AFTER = 0x33
     VY_8XY1 = 0x23
 
     # 8XY2 #
     OPCODE_8XY2 = 0x8342
     X_8XY2 = 0x03
     Y_8XY2 = 0x04
-    VX_8XY2_OLD = 0x12
-    VX_8XY2_NEW = 0x02
+    VX_8XY2_BEFORE = 0x12
+    VX_8XY2_AFTER = 0x02
     VY_8XY2 = 0x23
 
     # 8XY3 #
     OPCODE_8XY3 = 0x8673
     X_8XY3 = 0x06
     Y_8XY3 = 0x07
-    VX_8XY3_OLD = 0x12
-    VX_8XY3_NEW = 0x31
+    VX_8XY3_BEFORE = 0x12
+    VX_8XY3_AFTER = 0x31
     VY_8XY3 = 0x23
+
+    # 8XY4 #
+    OPCODE_8XY4 = 0x8124
+    X_8XY4 = 0x01
+    Y_8XY4 = 0x02
+    VX_8XY4_BEFORE = 0xA0
+    VX_8XY4_AFTER_NO_OVERFLOW = 0xAA
+    VX_8XY4_AFTER_OVERFLOW = 0x11
+    VY_8XY4_NORMAL = 0x0A
+    VY_8XY4_OVERFLOW = 0x71
+    VF_8XY4_CARRY = 0x01
+    VF_8XY4_NO_CARRY = 0x00
 
     # FX15 #
     OPCODE_FX15 = 0xF415

@@ -27,6 +27,15 @@ class CpuTest(unittest.TestCase):
     def assertRegisterIsZero(self, register):
         self.assertTrue(register == 0x00)
 
+    def assertRegistersAreZero(self, registers):
+        self.assertTrue(registers == [0] * len(registers))
+
+    def assertCarryIsNotSet(self):
+        self.assertRegisterIsZero(self.cpu.vRegister[CpuConstants.V_CARRY])
+
+    def assertCarryIsSet(self):
+        self.assertTrue(self.cpu.vRegister[CpuConstants.V_CARRY] == 0x01)
+
     def testShouldHaveMemory(self):
         self.assertIsInstance(self.cpu.memory, Memory)
 
@@ -34,7 +43,7 @@ class CpuTest(unittest.TestCase):
         pass
 
     def testShouldInitialiseAllRegisters(self):
-        self.assertEqual(self.cpu.vRegister, [0x0] * 8)
+        self.assertRegistersAreZero(self.cpu.vRegister)
         self.assertRegisterIsZero(self.cpu.opcode)
         self.assertRegisterIsZero(self.cpu.indexRegister)
         self.assertRegisterIsZero(self.cpu.delayTimer)
@@ -45,8 +54,8 @@ class CpuTest(unittest.TestCase):
         #self.assertRegisterIsZero(self.cpu.programCounter)
 
     def testShouldInitialiseStackAndPointer(self):
-        self.assertEqual(self.cpu.stack, [0x00] * 16)
-        self.assertEqual(self.cpu.stackPointer, 0x00)
+        self.assertRegistersAreZero(self.cpu.stack)
+        self.assertRegisterIsZero(self.cpu.stackPointer)
 
     def testShouldFetchCorrectOpcode(self):
         self.memory.getByte = Mock(return_value=CpuConstants.OPCODE)
@@ -77,6 +86,13 @@ class CpuTest(unittest.TestCase):
     def testShouldIncreaseProgramCounterByFourOnSkip(self):
         self.cpu.skipInstruction()
         self.assertInstructionSkipped()
+
+    def testShouldSetCarryCorrectly(self):
+        self.cpu.setCarry(True)
+        self.assertCarryIsSet()
+
+        self.cpu.setCarry(False)
+        self.assertCarryIsNotSet()
 
     def testShouldRaiseErrorOnWrongOpcode(self):
         with self.assertRaises(KeyError):
@@ -157,7 +173,7 @@ class CpuTest(unittest.TestCase):
 
     def testShouldExecuteOpcode7XNNWithoutOverflow(self):
         self.cpu.opcode = CpuConstants.OPCODE_7XNN
-        self.cpu.vRegister[CpuConstants.X_7XNN] = CpuConstants.VX_7XNN_LO
+        self.cpu.vRegister[CpuConstants.X_7XNN] = CpuConstants.VX_7XNN
         self.cpu.executeOpcode7XNN()
         self.assertEqual(
             self.cpu.vRegister[CpuConstants.X_7XNN],
@@ -167,56 +183,82 @@ class CpuTest(unittest.TestCase):
 
     def testShouldExecuteOpcode7XNNWithOverflow(self):
         self.cpu.opcode = CpuConstants.OPCODE_7XNN_OVERFLOW
-        self.cpu.vRegister[CpuConstants.X_7XNN] = CpuConstants.VX_7XNN_HI
+        self.cpu.vRegister[CpuConstants.X_7XNN] = CpuConstants.VX_7XNN
         self.cpu.executeOpcode7XNN()
         self.assertEqual(
             self.cpu.vRegister[CpuConstants.X_7XNN],
-            CpuConstants.VX_7XNN_SUM
+            CpuConstants.VX_7XNN_SUM_OVERFLOW
         )
         self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcode8XY0Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_8XY0
-        self.cpu.vRegister[CpuConstants.X_8XY0] = CpuConstants.VX_8XY0_OLD
+        self.cpu.vRegister[CpuConstants.X_8XY0] = CpuConstants.VX_8XY0_BEFORE
         self.cpu.vRegister[CpuConstants.Y_8XY0] = CpuConstants.VY_8XY0
         self.cpu.executeOpcode8XY0()
         self.assertEqual(
             self.cpu.vRegister[CpuConstants.X_8XY0],
-            CpuConstants.VX_8XY0_NEW
+            CpuConstants.VX_8XY0_AFTER
         )
         self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcode8XY1Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_8XY1
-        self.cpu.vRegister[CpuConstants.X_8XY1] = CpuConstants.VX_8XY1_OLD
+        self.cpu.vRegister[CpuConstants.X_8XY1] = CpuConstants.VX_8XY1_BEFORE
         self.cpu.vRegister[CpuConstants.Y_8XY1] = CpuConstants.VY_8XY1
         self.cpu.executeOpcode8XY1()
         self.assertEqual(
             self.cpu.vRegister[CpuConstants.X_8XY1],
-            CpuConstants.VX_8XY1_NEW
+            CpuConstants.VX_8XY1_AFTER
         )
         self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcode8XY2Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_8XY2
-        self.cpu.vRegister[CpuConstants.X_8XY2] = CpuConstants.VX_8XY2_OLD
+        self.cpu.vRegister[CpuConstants.X_8XY2] = CpuConstants.VX_8XY2_BEFORE
         self.cpu.vRegister[CpuConstants.Y_8XY2] = CpuConstants.VY_8XY2
         self.cpu.executeOpcode8XY2()
         self.assertEqual(
             self.cpu.vRegister[CpuConstants.X_8XY2],
-            CpuConstants.VX_8XY2_NEW
+            CpuConstants.VX_8XY2_AFTER
         )
         self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcode8XY3Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_8XY3
-        self.cpu.vRegister[CpuConstants.X_8XY3] = CpuConstants.VX_8XY3_OLD
+        self.cpu.vRegister[CpuConstants.X_8XY3] = CpuConstants.VX_8XY3_BEFORE
         self.cpu.vRegister[CpuConstants.Y_8XY3] = CpuConstants.VY_8XY3
         self.cpu.executeOpcode8XY3()
         self.assertEqual(
             self.cpu.vRegister[CpuConstants.X_8XY3],
-            CpuConstants.VX_8XY3_NEW
+            CpuConstants.VX_8XY3_AFTER
         )
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode8XY4WithoutOverflowAndNoCarry(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY4
+        self.cpu.vRegister[CpuConstants.V_CARRY] = 0x01
+        self.cpu.vRegister[CpuConstants.X_8XY4] = CpuConstants.VX_8XY4_BEFORE
+        self.cpu.vRegister[CpuConstants.Y_8XY4] = CpuConstants.VY_8XY4_NORMAL
+        self.cpu.executeOpcode8XY4()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY4],
+            CpuConstants.VX_8XY4_AFTER_NO_OVERFLOW
+        )
+        self.assertCarryIsNotSet()
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode8XY4WithOverflowAndCarry(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY4
+        self.cpu.vRegister[CpuConstants.V_CARRY] = 0x00
+        self.cpu.vRegister[CpuConstants.X_8XY4] = CpuConstants.VX_8XY4_BEFORE
+        self.cpu.vRegister[CpuConstants.Y_8XY4] = CpuConstants.VY_8XY4_OVERFLOW
+        self.cpu.executeOpcode8XY4()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY4],
+            CpuConstants.VX_8XY4_AFTER_OVERFLOW
+        )
+        self.assertCarryIsSet()
         self.assertProgramCounterIncreased()
 
     def testShouldExecuteOpcodeFX15Correctly(self):
