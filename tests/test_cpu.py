@@ -261,6 +261,32 @@ class CpuTest(unittest.TestCase):
         self.assertCarryIsSet()
         self.assertProgramCounterIncreased()
 
+    def testShouldExecuteOpcode8XY5WithoutOverflowAndNoBorrow(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY5
+        self.cpu.vRegister[CpuConstants.V_CARRY] = 0x00
+        self.cpu.vRegister[CpuConstants.X_8XY5] = CpuConstants.VX_8XY5_BEFORE
+        self.cpu.vRegister[CpuConstants.Y_8XY5] = CpuConstants.VY_8XY5_NORMAL
+        self.cpu.executeOpcode8XY5()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY5],
+            CpuConstants.VX_8XY5_AFTER_NO_OVERFLOW
+        )
+        self.assertCarryIsSet()
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode8XY5WithOverflowAndBorrow(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY5
+        self.cpu.vRegister[CpuConstants.V_CARRY] = 0x01
+        self.cpu.vRegister[CpuConstants.X_8XY5] = CpuConstants.VX_8XY5_BEFORE
+        self.cpu.vRegister[CpuConstants.Y_8XY5] = CpuConstants.VY_8XY5_OVERFLOW
+        self.cpu.executeOpcode8XY5()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY5],
+            CpuConstants.VX_8XY5_AFTER_OVERFLOW
+        )
+        self.assertCarryIsNotSet()
+        self.assertProgramCounterIncreased()
+
     def testShouldExecuteOpcodeFX15Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX15
         self.cpu.vRegister[CpuConstants.X_FX15] = CpuConstants.VX_FX15
