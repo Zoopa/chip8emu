@@ -287,6 +287,30 @@ class CpuTest(unittest.TestCase):
         self.assertCarryIsNotSet()
         self.assertProgramCounterIncreased()
 
+    def testShouldExecuteOpcode8XY6WithLSB0(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY6
+        self.cpu.vRegister[CpuConstants.V_CARRY] = 0x00
+        self.cpu.vRegister[CpuConstants.X_8XY6] = CpuConstants.VX_8XY6_LSB0
+        self.cpu.executeOpcode8XY6()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY6],
+            CpuConstants.VX_8XY6_AFTER
+        )
+        self.assertCarryIsNotSet()
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode8XY6WithLSB1(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XY6
+        self.cpu.vRegister[CpuConstants.V_CARRY] = 0x00
+        self.cpu.vRegister[CpuConstants.X_8XY6] = CpuConstants.VX_8XY6_LSB1
+        self.cpu.executeOpcode8XY6()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XY6],
+            CpuConstants.VX_8XY6_AFTER
+        )
+        self.assertCarryIsSet()
+        self.assertProgramCounterIncreased()
+
     def testShouldExecuteOpcode8XY7WithoutOverflowAndNoBorrow(self):
         self.cpu.opcode = CpuConstants.OPCODE_8XY7
         self.cpu.vRegister[CpuConstants.V_CARRY] = 0x00
