@@ -32,7 +32,7 @@ class CPU(object):
             0x8004: self.executeOpcode8XY4,
             0x8005: self.executeOpcode8XY5,
             0x8006: None,
-            0x8007: None,
+            0x8007: self.executeOpcode8XY7,
             0x800E: None,
             0x9000: None,
             0xA000: self.executeOpcodeANNN,
@@ -200,6 +200,15 @@ class CPU(object):
         x = (self.opcode & 0xF00) >> 8
         y = (self.opcode & 0xF0) >> 4
         val = self.vRegister[x] - self.vRegister[y]
+        self.vRegister[x] = val & 0xFF
+        self.setCarry(val > 0x00)
+        self.increaseProgramCounter()
+
+    def executeOpcode8XY7(self):
+        """ Set VX to VY - VX with borrow in VF """
+        x = (self.opcode & 0xF00) >> 8
+        y = (self.opcode & 0xF0) >> 4
+        val = self.vRegister[y] - self.vRegister[x]
         self.vRegister[x] = val & 0xFF
         self.setCarry(val > 0x00)
         self.increaseProgramCounter()

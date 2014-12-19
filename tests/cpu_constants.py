@@ -114,6 +114,16 @@ class CpuConstants(object):
     VY_8XY5_NORMAL = 0x04
     VY_8XY5_OVERFLOW = 0x15
 
+   # 8XY7 #
+    OPCODE_8XY7 = 0x8347
+    X_8XY7 = 0x03
+    Y_8XY7 = 0x04
+    VX_8XY7_BEFORE = 0x20
+    VX_8XY7_AFTER_NO_OVERFLOW = 0x10
+    VX_8XY7_AFTER_OVERFLOW = 0xF0
+    VY_8XY7_NORMAL = 0x30
+    VY_8XY7_OVERFLOW = 0x10
+
     # FX15 #
     OPCODE_FX15 = 0xF415
     DT_FX15 = 0x1234
