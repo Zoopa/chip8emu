@@ -337,6 +337,34 @@ class CpuTest(unittest.TestCase):
         self.assertCarryIsNotSet()
         self.assertProgramCounterIncreased()
 
+    def testShouldExecuteOpcode8XYEWithMSB0(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XYE
+        self.cpu.vRegister[CpuConstants.V_CARRY] = 0x01
+        self.cpu.vRegister[CpuConstants.X_8XYE] = (
+            CpuConstants.VX_8XYE_MSB0_BEFORE
+        )
+        self.cpu.executeOpcode8XYE()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XYE],
+            CpuConstants.VX_8XYE_MSB0_AFTER
+        )
+        self.assertCarryIsNotSet()
+        self.assertProgramCounterIncreased()
+
+    def testShouldExecuteOpcode8XYEWithMSB1(self):
+        self.cpu.opcode = CpuConstants.OPCODE_8XYE
+        self.cpu.vRegister[CpuConstants.V_CARRY] = 0x00
+        self.cpu.vRegister[CpuConstants.X_8XYE] = (
+            CpuConstants.VX_8XYE_MSB1_BEFORE
+        )
+        self.cpu.executeOpcode8XYE()
+        self.assertEqual(
+            self.cpu.vRegister[CpuConstants.X_8XYE],
+            CpuConstants.VX_8XYE_MSB1_AFTER
+        )
+        self.assertCarryIsSet()
+        self.assertProgramCounterIncreased()
+
     def testShouldExecuteOpcodeFX15Correctly(self):
         self.cpu.opcode = CpuConstants.OPCODE_FX15
         self.cpu.vRegister[CpuConstants.X_FX15] = CpuConstants.VX_FX15

@@ -33,7 +33,7 @@ class CPU(object):
             0x8005: self.executeOpcode8XY5,
             0x8006: self.executeOpcode8XY6,
             0x8007: self.executeOpcode8XY7,
-            0x800E: None,
+            0x800E: self.executeOpcode8XYE,
             0x9000: None,
             0xA000: self.executeOpcodeANNN,
             0xB000: None,
@@ -219,6 +219,14 @@ class CPU(object):
         val = self.vRegister[y] - self.vRegister[x]
         self.vRegister[x] = val & 0xFF
         self.setCarry(val > 0x00)
+        self.increaseProgramCounter()
+
+    def executeOpcode8XYE(self):
+        """ Shift VX left by 1. Set VF to MSB of VX """
+        x = (self.opcode & 0xF00) >> 8
+        vxVal = self.vRegister[x]
+        self.vRegister[x] = (vxVal << 1) & 0xFF
+        self.setCarry(vxVal >> 7)
         self.increaseProgramCounter()
 
     def executeOpcodeANNN(self):
